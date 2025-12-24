@@ -1,63 +1,63 @@
 const axios = require('axios');
 const NodeCache = require('node-cache');
 const cityList = require('../cities.json').List;
-function computeConfortIndex(weather) {
-    const temp = weather.main.temp - 273.15; // Convert from Kelvin to Celsius
+
+const cache = new NodeCache({ stdTTL: parseInt(process.env.CACHE_TTL) || 300 });
+
+// Comfort Index formula:
+// 100 - (|Temp - 22| * 2 + Humidity * 0.5 + WindSpeed * 1.5)
+// Score clamped between 0-100
+function computeComfortIndex(weather) {
+    const tempC = weather.main.temp - 273.15; // Kelvin → Celsius
     const humidity = weather.main.humidity;
     const wind = weather.wind.speed;
 
-    let score = 100 - (Math.abs(temp - 22) * 2 + humidity * 0.5 + wind * 1.5);
+    let score = 100 - (Math.abs(tempC - 22) * 2 + humidity * 0.5 + wind * 1.5);
     score = Math.max(0, Math.min(100, score));
     return Math.round(score);
-
 }
 
-async function getWeatherData(){
+async function getWeatherData() {
+    // Check cache first
     const cached = cache.get('weatherData');
-    if(cached) return{
-        cache: 'HIT',
-        data: cached
-    };
+    if (cached) return { cache: 'HIT', data: cached };
 
     const results = [];
 
-    for(let city of cityList){
-        try{
+    for (let city of cityList) {
+        try {
             const url = `https://api.openweathermap.org/data/2.5/weather?id=${city.CityCode}&appid=${process.env.OPENWEATHER_API_KEY}`;
-
             const response = await axios.get(url);
             const weather = response.data;
-            const comfortScore = computeConfortIndex(weather);
+
+            const comfortScore = computeComfortIndex(weather);
 
             results.push({
                 city: weather.name,
                 description: weather.weather[0].description,
-                temp: (weather.main.temp - 273.15).toFixed(1),
+                temp: (weather.main.temp - 273.15).toFixed(1), // Celsius
                 comfortScore,
             });
-        }
-        catch (err) {
-            console.error(`Error fetching ${city.CityName} ($ {city.CityCode}):`, err.message);
 
+        } catch (err) {
+            console.error(`Error fetching ${city.CityName} (${city.CityCode}):`, err.message);
+            // Push fallback data from cities.json if API fails
             results.push({
                 city: city.CityName,
                 description: city.Status,
                 temp: city.Temp,
-                comfortScore: 0
+                comfortScore: 0 // or you can calculate a rough score based on Temp
             });
         }
     }
 
-    //sort comfort score
+    // Sort by comfortScore descending
     results.sort((a, b) => b.comfortScore - a.comfortScore);
 
+    // Cache the results
     cache.set('weatherData', results);
 
-    return{
-        cache: 'MISS',
-        data: results
-    };
-
+    return { cache: 'MISS', data: results };
 }
 
-module.export = { getWeatherData };
+module.exports = { getWeatherData };

@@ -1,18 +1,21 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import axios from 'axios';
+
 
 const WeatherDashboard = () => {
-    const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAutho0();
+    const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
     const [weatherData, setWeatherData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const fetchWeather = useCallback(async () => {
         try {
             const token = await getAccessTokenSilently({
-                audiance: 'http://weather-api'
+                audience: 'https://weather-api'
             });
 
             const res = await axios.get('http://localhost:5000/api/weather', {
-                header: {
+                headers: {
                     Authorization: `Bearer ${token}`
                 }
             });

@@ -12,7 +12,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use('api/weather', weatherRoutes);
+app.use('/api/weather', weatherRoutes);
 
 app.get('/', (req, res) => {
     res.send('weather api running');
