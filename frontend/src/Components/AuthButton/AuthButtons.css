@@ -1,0 +1,57 @@
+/* ===== Auth button container ===== */
+.auth-container {
+  position: fixed;
+  top: 24px;
+  right: 28px;
+  z-index: 1000;
+}
+
+/* ===== Base button ===== */
+.auth-btn {
+  padding: 12px 34px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  background: linear-gradient(135deg, #008e2f, #008348);
+  box-shadow: 0 10px 30px rgba(79, 140, 255, 0.45);
+  letter-spacing: 0.6px;
+  transition: all 0.3s ease;
+  margin-right: 60rem;
+}
+
+/* ===== Hover ===== */
+.auth-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 45px rgba(106, 92, 255, 0.65);
+}
+
+/* ===== Click ===== */
+.auth-btn:active {
+  transform: scale(0.96);
+}
+
+/* ===== Logout variant ===== */
+.auth-btn.logout {
+  background: linear-gradient(135deg, #ff5f6d, #ff3d3d);
+  box-shadow: 0 10px 30px rgba(255, 95, 109, 0.45);
+}
+
+.auth-btn.logout:hover {
+  box-shadow: 0 16px 45px rgba(255, 61, 61, 0.65);
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 768px) {
+  .auth-container {
+    top: 16px;
+    right: 16px;
+  }
+
+  .auth-btn {
+    padding: 10px 26px;
+    font-size: 0.9rem;
+  }
+}
