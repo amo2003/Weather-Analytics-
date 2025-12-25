@@ -1,70 +1,95 @@
-# Getting Started with Create React App
+Project Title -
+Weather Analytics Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Project Overview -
+This is a full-stack weather analytics application that fetches real-time weather data from OpenWeatherMap, computes a custom Comfort Index Score, and ranks cities based on comfort level. Authentication and authorization
+are implemented using Auth0.
 
-## Available Scripts
+Tech Stack - 
+FrontEnd: React
+BackEnd: Node.js, Express
+Authentication: Auth0 (with MFA)
+Weather API: OpenWeatherMap
+Caching: In-memory cache
 
-In the project directory, you can run:
+1) Setup Instructions - 
 
-### `npm start`
+1. clone the repository, git clone <repo-url>
+2. Backend setup
+        cd backend
+        npm install
+        Create a .env file with:
+            PORT=5000
+            OPENWEATHER_API_KEY=2ee6f4edce2d0767d5aad3a2d5d70be3
+            CACHE_TTL=300
+        npm start
+3. Frontend setup
+   cd frontend
+   npm install
+   npm start
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2) Comfort Index Formula - 
 
-### `npm test`
+Comfort Index Score is calculated using the following parameters:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Temperature (°C)
+- Humidity (%)
+- Wind Speed (m/s)
 
-### `npm run build`
+Formula:
+Score = 100 - (|Temp - 22| * 2 + Humidity * 0.5 + WindSpeed * 1.5)
+The score is normalized between 0 and 100.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3) Reasoning Behind Variable Weights - 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Temperature is given higher weight because human comfort is highly sensitive
+to temperature variations.
 
-### `npm run eject`
+Humidity affects perceived heat and discomfort, so it has moderate weight.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Wind speed can improve comfort in hot conditions but cause discomfort
+if too strong.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4) City Ranking Logic - 
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Cities are sorted in descending order based on the Comfort Index Score.
+The city with the highest score is ranked as "Most Comfortable".
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+5) Caching Design Explanation -
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Weather API responses are cached on the server for 5 minutes to reduce
+external API calls.
+Processed comfort score results are cached separately to improve performance.
+A debug endpoint is provided to check cache status (HIT or MISS).
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+6) Auth0 is used for authentication.
 
-### Analyzing the Bundle Size
+- Only authenticated users can access the dashboard
+- MFA is enabled via email verification
+- Public signups are disabled
+- Only whitelisted users can log in
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Test user:
+Email: careers@fidenz.com
+Password: Pass#fidenz
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+7) Trade-offs Considered
 
-### Advanced Configuration
+In-memory caching was used instead of Redis to keep the setup simple
+Comfort Index is subjective and may vary based on personal preferences
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+8) Known Limitations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Weather data depends on OpenWeatherMap availability
+Comfort Index is a simplified model and not personalized per user
 
-### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
