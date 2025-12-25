@@ -14,7 +14,7 @@ Caching: In-memory cache
 
 1) Setup Instructions - 
 
-1. clone the repository, git clone <repo-url>
+1. Clone the repository, git clone <repo-url>
 2. Backend setup
         cd backend
         npm install
@@ -49,8 +49,8 @@ to temperature variations.
 
 Humidity affects perceived heat and discomfort, so it has moderate weight.
 
-Wind speed can improve comfort in hot conditions but cause discomfort
-if too strong.
+Wind speed can improve comfort in hot conditions, but cause discomfort
+If too strong.
 
 
 4) City Ranking Logic - 
