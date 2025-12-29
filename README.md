@@ -91,5 +91,24 @@ Weather data depends on OpenWeatherMap availability.
 Comfort Index is a simplified model and not personalised per user.
 
 
+9) Addtional Features
+
+Dark Mode
+The application includes a dark mode feature to improve usability and accessibility, especially in low-light environments.
+
+- Implemented using frontend state management and CSS variables
+- User can toggle between light and dark themes
+- Theme selection persists during the session
+- Improves user experience without impacting application performance
+
+
+Sorting and Filtering
+The frontend provides sorting and filtering functionality to help users analyze weather data more efficiently.
+
+- Cities can be filtered based on conditions such as temperature or comfort index range
+- Sorting allows users to order cities by temperature or comfort index
+- Implemented on the frontend to reduce unnecessary backend calls
+- Improves data readability and user interaction
+
 
 
