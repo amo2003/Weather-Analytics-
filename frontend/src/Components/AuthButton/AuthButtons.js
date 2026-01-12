@@ -3,11 +3,11 @@ import { useAuth0 } from "@auth0/auth0-react";
 import "./AuthButtons.css";
 
 const AuthButton = () => {
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();    //get auth methods and state
 
   return (
     <div className="auth-container">
-      {isAuthenticated ? (
+      {isAuthenticated ? (  //if logged in show logout button
         <button
           onClick={() =>
             logout({ returnTo: window.location.origin })
@@ -18,7 +18,7 @@ const AuthButton = () => {
         </button>
       ) : (
         <button
-          onClick={() => loginWithRedirect()}
+          onClick={() => loginWithRedirect()}  //if not loging, show log button
           className="auth-btn login"
         >
           Login

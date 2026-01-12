@@ -2,6 +2,7 @@ const axios = require('axios');
 const NodeCache = require('node-cache');
 const cityList = require('../cities.json').List;
 
+//this is cache instance, how long data will store in chache
 const cache = new NodeCache({ stdTTL: parseInt(process.env.CACHE_TTL) || 300 });
 
 // Comfort Index formula:
@@ -17,11 +18,11 @@ function computeComfortIndex(weather) {
     return Math.round(score);
 }
 
-async function getWeatherData() {
+async function getWeatherData() { //main server function called by route
     // Check cache first
     const cached = cache.get('weatherData');
     if (cached) return { cache: 'HIT', data: cached };
-
+//HIT meaa already cached data, not need call api again
     const results = [];
 
     for (let city of cityList) {
@@ -31,7 +32,7 @@ async function getWeatherData() {
             const weather = response.data;
 
             const comfortScore = computeComfortIndex(weather);
-
+//result push to results array for frontend display
             results.push({
                 city: weather.name,
                 description: weather.weather[0].description,
@@ -57,7 +58,7 @@ async function getWeatherData() {
     // Cache the results
     cache.set('weatherData', results);
 
-    return { cache: 'MISS', data: results };
+    return { cache: 'MISS', data: results }; //indicate fresh data and api , stored in cache
 }
 
 module.exports = { getWeatherData };

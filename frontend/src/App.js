@@ -4,11 +4,12 @@ import WeatherDashboard from "./Components/WeatherDashboard/WeatherDashboard";
 import AuthButton from "./Components/AuthButton/AuthButtons";
 
 function App() {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated } = useAuth0(); //get authentication state (logged in or not)
 
   return (
-    <>
-      {/*Login / Logout */}
+    <> {/*Allows returning multiple elements without extra DOM nodes*/}
+
+      {/*Login / Logout buttons */}
       <AuthButton />
 
       {/*Show dashboard only logged in */}

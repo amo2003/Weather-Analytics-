@@ -4,17 +4,20 @@ import axios from 'axios';
 import './WeatherDashboard.css';
 
 const WeatherDashboard = () => {
-  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();  //get token without redirect, auth state, send user to login method
 
+  //store api response
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 BONUS STATES (already existing)
+
+
+  //BONUS STATES (already existing)
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('comfortScore');
   const [order, setOrder] = useState('desc');
 
-  // 🔹 NEW: DARK MODE STATE
+  //DARK MODE STATE
   const [darkMode, setDarkMode] = useState(false);
 
   const fetchWeather = useCallback(async () => {
@@ -22,21 +25,23 @@ const WeatherDashboard = () => {
       const token = await getAccessTokenSilently({
         audience: 'https://weather-api'
       });
-
+//get token from auth0 to access protected backend route
+//send token via authorization header
       const res = await axios.get('http://localhost:5000/api/weather', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-
+//store weather data in state
       setWeatherData(res.data.data);
     } catch (err) {
       console.error('Error fetching data:', err);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   }, [getAccessTokenSilently]);
 
+  //if not loging redirect to login, else fetch weather data
   useEffect(() => {
     if (!isAuthenticated) {
       loginWithRedirect();
@@ -45,10 +50,11 @@ const WeatherDashboard = () => {
     }
   }, [isAuthenticated, loginWithRedirect, fetchWeather]);
 
-  // 🔹 FILTER + SORT (UNCHANGED)
+  //FILTER + SORT (UNCHANGED)
   const filteredAndSortedData = useMemo(() => {
     let data = [...weatherData];
 
+    //filter cities by name
     if (search) {
       data = data.filter(city =>
         city.city.toLowerCase().includes(search.toLowerCase())
@@ -70,13 +76,13 @@ const WeatherDashboard = () => {
       <div className="header">
         <h1>Weather Dashboard</h1>
 
-        {/* 🔹 DARK MODE TOGGLE */}
+        {/*DARK MODE TOGGLE */}
         <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? '☀ Light Mode' : '🌙 Dark Mode'}
         </button>
       </div>
 
-      {/* 🔹 FILTER CONTROLS */}
+      {/*FILTER CONTROLS */}
       <div className="controls">
         <input
           type="text"
@@ -123,3 +129,10 @@ const WeatherDashboard = () => {
 };
 
 export default WeatherDashboard;
+
+
+
+/*useState -	Store component state
+useEffect -	Run code on lifecycle events
+useCallback -	Prevent function recreation
+useMemo	 - Optimize filtering & sorting*/
